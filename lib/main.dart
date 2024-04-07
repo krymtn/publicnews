@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:publicnews/extensions/context_extension.dart';
-import 'package:publicnews/theme/theme.dart';
+import 'theme/theme.dart';
 
 void main() {
   runApp(const MyApp());
@@ -38,69 +38,92 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
+  late TabController _tabController;
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  final List<String> _categories = ["All", "News", "Business", "Innovation", "Culture", "Travel"];
+
+  @override
+  void initState() {
+    _tabController = TabController(vsync: this, length: 4, initialIndex: 1);
+    _tabController.addListener(() {});
+
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              'You have pushed the button this many times:',style: context.bodyLarge
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+      body: SafeArea(
+        child: NestedScrollView(
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return [
+              SliverAppBar(
+                stretch: true,
+                floating: true,
+                title: const Text("Public news"),
+                actions: <Widget>[
+                  IconButton(
+                    icon: const Icon(Icons.search),
+                    onPressed: () {},
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.more_vert),
+                    onPressed: () {},
+                  ),
+                ],
+              )
+            ];
+          },
+          body: Column(
+            children: <Widget>[
+              /*TabBar(
+                controller: _tabController,
+                tabs: const <Widget>[
+                  Tab(icon: Icon(Icons.camera)),
+                  Tab(text: "Chats"),
+                  Tab(text: "Status"),
+                  Tab(text: "Calls"),
+                ],
+              )*/
+              SizedBox(
+                height: 48,
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _categories.length,
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    itemBuilder: (context, index) {
+                      return Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Text(_categories[index], style: context.bodyLarge),
+                          ),
+                          VerticalDivider(color: (index == _categories.length-1) ?Colors.transparent :Colors.grey, thickness: 1.5, indent: 16, endIndent: 18)
+                        ],
+                      );
+                }),
+              ),
+              Expanded(
+                child: Container(
+                  color: Colors.white,
+                  child: TabBarView(
+                    controller: _tabController,
+                    children: <Widget>[
+                      Container(color: Colors.red),
+                      Container(color: Colors.blue),
+                      Container(color: Colors.pink),
+                      Container(color: Colors.orange),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
+        onPressed: () {},
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.

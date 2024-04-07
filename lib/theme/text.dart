@@ -2,8 +2,9 @@ part of 'theme.dart';
 
 const lightTextTheme = TextTheme(
     bodyLarge: TextStyle(
-    color: Colors.blue,
-    fontWeight: FontWeight.w600
+      fontSize: 15,
+    color: Colors.black,
+    fontWeight: FontWeight.bold
   )
 );
 
