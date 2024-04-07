@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:publicnews/extensions/context_extension.dart';
+import 'extensions/extensions.dart';
 import 'theme/theme.dart';
 
 void main() {
